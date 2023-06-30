@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
 Nav,
 NavLink,
@@ -8,7 +8,14 @@ NavBtn,
 NavBtnLink,
 } from './NavbarElements';
 
-const Navbar = () => {
+const Navbar = ({user, setUser}) => {
+	
+	const login = (user) => {
+		setUser(user);
+	};
+	const logout = () => {
+		setUser(null);
+	};	
 return (
 	<>
 	<Nav>
@@ -24,6 +31,18 @@ return (
 		<NavLink to='/cart' activeStyle>
 			Cart Details
 		</NavLink>
+		<NavLink to='/add-product' activeStyle>
+			Add Products
+		</NavLink>
+		{!user ? (
+                <NavLink to="/login" >
+                  Login
+                </NavLink>
+              ) : (
+                <NavLink to="/" onClick={logout}>
+                  Logout
+                </NavLink>
+        )}
 		{/* Second Nav */}
 		{/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
 		</NavMenu>
