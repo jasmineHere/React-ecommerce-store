@@ -19,6 +19,25 @@ function App() {
   const routerRef = useRef();
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+    setUser(parsedUser);
+  }, []);
+
+  //to fetch the user and products data from the server when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      let user = localStorage.getItem("user");
+      const productsResponse = await axios.get("http://localhost:3001/products");
+      user = user ? JSON.parse(user) : null;
+      setUser(user);
+      setProducts(productsResponse.data);
+    };
+
+    fetchData();
+  }, []);
+
   const removeFromCart = (productId) => {
     const updatedCart = { ...cart };
     delete updatedCart[productId];
@@ -73,11 +92,6 @@ function App() {
     localStorage.removeItem("user");
   };
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-    setUser(parsedUser);
-  }, []);
 
   return (
     <Context.Provider
@@ -105,21 +119,7 @@ function App() {
           </Routes>       
       </Router>
     </Context.Provider>
-  );
-  // return (
-  //   <BrowserRouter>
-  //       <Navbar />
-  //       <Routes>
-  //         <Route path='/' exact element={<HomeScreen/>} />
-  //         <Route path='/login' element={<LoginScreen/>} />
-  //         <Route path='/home' element={<HomeScreen/>} />  {/* Similar to product list */}
-  //         <Route path='/product-details' element={<ProductDetails/>} /> {/* have to work on this screen - for the product details */}
-  //         <Route path='/cart' element={<CartScreen/>} />
-  //         <Route path='/add-product' element={<AddProductScreen/>} />
-  //       </Routes>
-  //   </BrowserRouter>
-    
-  // );
+  );  
 }
 
 export default App;

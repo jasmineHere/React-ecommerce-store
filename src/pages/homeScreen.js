@@ -1,24 +1,39 @@
-import React from 'react';
+import React from "react";
+import ProductItem from "../components/ProductItem";
+import withContext from "../withContext";
 
-const HomeScreen = () => {
-return (
+const HomeScreen = (props) => {
+  const { products, addToCart } = props.context;
+
+  return (
     <>
-    <div
-	style={{
-		display: 'flex',
-		justifyContent: 'Center',
-		alignItems: 'Center',
-		height: '100vh'
-	}}
-	>
-    <div>
-    <h1>This is the home screen.</h1>
-    </div>
-	
-	</div>
+      <div className="hero is-primary">
+        <div className="hero-body container">
+          <h4 className="title">Our Products</h4>
+        </div>
+      </div>
+      <br />
+      <div className="container">
+        <div className="column columns is-multiline">
+          {products && products.length ? (
+            products.map((product, index) => (
+              <ProductItem
+                product={product}
+                key={index}
+                addToCart={addToCart}
+              />
+            ))
+          ) : (
+            <div className="column">
+              <span className="title has-text-grey-light">
+                No products found!
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
     </>
-	
-);
+  );
 };
 
-export default HomeScreen;
+export default withContext(HomeScreen);
