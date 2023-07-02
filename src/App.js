@@ -50,8 +50,15 @@ function App() {
     setCart(updatedCart);
   };
 
-  const addProduct = (product) => {
-    setProducts([...products, product]);
+  // const addProduct = (product) => {
+  //   setProducts([...products, product]);
+  // };
+  const addProduct = (product, callback) => {
+    const updatedProducts = [...products, product];
+    setProducts(updatedProducts);
+    if (callback) {
+      callback();
+    }
   };
 
   const clearCart = () => {
