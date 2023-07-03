@@ -19,13 +19,14 @@ function App() {
   const routerRef = useRef();
   const [user, setUser] = useState(null);
 
+  //for loading last user session from the local storage to the state if it exists
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const parsedUser = storedUser ? JSON.parse(storedUser) : null;
     setUser(parsedUser);
   }, []);
 
-  //to fetch the user and products data from the server when the component mounts
+  //(for product view)to fetch the user and products data from the server when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       let user = localStorage.getItem("user");
@@ -38,21 +39,51 @@ function App() {
     fetchData();
   }, []);
 
-  const removeFromCart = (productId) => {
+  //(for cart management) to fetch data from the API and update the component state with the retrieved data,runs only once when the component is mounted
+  useEffect(() => {
+    const fetchData = async () => {
+      let user = localStorage.getItem("user");
+      let cart = localStorage.getItem("cart");
+  
+      const products = await axios.get('http://localhost:3001/products');
+      user = user ? JSON.parse(user) : null;
+      cart = cart ? JSON.parse(cart) : {};
+  
+      setUser(user);
+      setProducts(products.data);
+      setCart(cart);
+    };
+  
+    fetchData();
+  }, []);
+
+  const addToCart = (cartItem) => {
     const updatedCart = { ...cart };
-    delete updatedCart[productId];
+    if (updatedCart[cartItem.id]) {
+      updatedCart[cartItem.id].amount += cartItem.amount;
+    } else {
+      updatedCart[cartItem.id] = cartItem;
+    }
+    if (updatedCart[cartItem.id].amount > updatedCart[cartItem.id].product.stock) {
+      updatedCart[cartItem.id].amount = updatedCart[cartItem.id].product.stock;
+    }
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setCart(updatedCart);
+  };  
+
+  const removeFromCart = (cartItemId) => {
+    const updatedCart = { ...cart };
+    delete updatedCart[cartItemId];
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCart(updatedCart);
   };
-
-  const addToCart = (product) => {
-    const updatedCart = { ...cart };
-    updatedCart[product.id] = product;
+  
+  const clearCart = () => {
+    const updatedCart = {};
+    localStorage.removeItem("cart");
     setCart(updatedCart);
   };
-
-  // const addProduct = (product) => {
-  //   setProducts([...products, product]);
-  // };
+  
   const addProduct = (product, callback) => {
     const updatedProducts = [...products, product];
     setProducts(updatedProducts);
@@ -60,11 +91,7 @@ function App() {
       callback();
     }
   };
-
-  const clearCart = () => {
-    setCart({});
-  };
-
+  
   const checkout = () => {
     // Perform checkout logic
   };
