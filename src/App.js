@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
-import { BrowserRouter as Router, Switch, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeScreen from './pages/homeScreen';
 import CartScreen from './pages/cartScreen';
 import ProductDetails from './pages/productScreen';
@@ -14,7 +14,7 @@ import jwt_decode from 'jwt-decode';
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [showMenu, setShowMenu] = useState(false);
+  //const [showMenu, setShowMenu] = useState(false);
   const [cart, setCart] = useState({});
   const routerRef = useRef();
   const [user, setUser] = useState(null);
@@ -45,7 +45,7 @@ function App() {
       let user = localStorage.getItem("user");
       let cart = localStorage.getItem("cart");
   
-      const products = await axios.get('http://localhost:3001/products');
+      const products = await axios.get('http://localhost:3000/products');
       user = user ? JSON.parse(user) : null;
       cart = cart ? JSON.parse(cart) : {};
   
@@ -120,11 +120,11 @@ function App() {
     }
   };
   
-  const logout = (e) => {
-    e.preventDefault();
-    setUser(null);
-    localStorage.removeItem("user");
-  };
+  // const logout = (e) => {
+  //   e.preventDefault();
+  //   setUser(null);
+  //   localStorage.removeItem("user");
+  // };
 
 
   return (
